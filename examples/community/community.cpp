@@ -8,12 +8,13 @@ int main(int argc, char* argv[]) {
   const TStr InFNm = Env.GetIfArgPrefixStr("-i:", "graph.txt", "Input graph (undirected graph)");
   const TStr OutFNm = Env.GetIfArgPrefixStr("-o:", "communities.txt", "Output file");
   const int CmtyAlg = Env.GetIfArgPrefixInt("-a:", 2, "Algorithm: 1:Girvan-Newman, 2:Clauset-Newman-Moore, 3:Infomap");
-
+  const TStr before = Env.GetIfArgPrefixStr("-z:", ExeTm.GetTmStr(), "loading edges");
   PUNGraph Graph = TSnap::LoadEdgeList<PUNGraph>(InFNm, false);
+  const TStr after = Env.GetIfArgPrefixStr("-z:", ExeTm.GetTmStr(), "loaded edges");
   //PUNGraph Graph = TSnap::LoadEdgeList<PUNGraph>("../as20graph.txt", false);
   //PUNGraph Graph = TSnap::GenRndGnm<PUNGraph>(5000, 10000); // generate a random graph
-
   TSnap::DelSelfEdges(Graph);
+  const TStr deleted = Env.GetIfArgPrefixStr("-z:", ExeTm.GetTmStr(), "deleted self edges");
   TCnComV CmtyV;
   double Q = 0.0;
   TStr CmtyAlgStr;
@@ -28,6 +29,8 @@ int main(int argc, char* argv[]) {
     Q = TSnap::Infomap(Graph, CmtyV); }
   else { Fail; }
 
+
+  const TStr completed = Env.GetIfArgPrefixStr("-z:", ExeTm.GetTmStr(), "completed algorithm");
   FILE *F = fopen(OutFNm.CStr(), "wt");
   fprintf(F, "# Input: %s\n", InFNm.CStr());
   fprintf(F, "# Nodes: %d    Edges: %d\n", Graph->GetNodes(), Graph->GetEdges());
